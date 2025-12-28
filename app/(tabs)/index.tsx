@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ThemedText type='title'>
-        Welcome!
+        Explore!
       </ThemedText>
     </ThemedView>
   );
