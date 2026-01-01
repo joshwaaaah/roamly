@@ -8,8 +8,8 @@ export function Button(props: Props) {
   return (
     <Pressable
     {...props}
-    className="bg-black p-5 rounded-2xl mt-4">
-      <Text className="font-medium text-center text-white text-lg">
+    className="bg-black p-5 rounded-xl">
+      <Text className="text-center text-white text-lg">
         { props.title }
       </Text>
     </Pressable>
