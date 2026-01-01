@@ -1,4 +1,4 @@
-import { Session, User, SignUpWithPasswordCredentials, SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { useContext, useState, useEffect, createContext } from 'react';
 import { supabase } from '@/utils/supabase';
 
@@ -6,16 +6,10 @@ const AuthContext = createContext<{
   loading: boolean,
   session: Session | null | undefined,
   user: User | null | undefined,
-  signIn: (data: SignInWithPasswordCredentials) => void
-  signOut: () => void,
-  signUp: (data: SignUpWithPasswordCredentials) => void
 }>({
   session: null,
   user: null,
   loading: true,
-  signUp: () => { },
-  signIn: () => { },
-  signOut: () => { },
 });
 
 const AuthProvider = ({ children }: any) => {
@@ -49,9 +43,6 @@ const AuthProvider = ({ children }: any) => {
     session,
     user,
     loading,
-    signOut: () => supabase.auth.signOut(),
-    signIn: (data: SignInWithPasswordCredentials) => supabase.auth.signInWithPassword(data),
-    signUp: (data: SignUpWithPasswordCredentials) => supabase.auth.signUp(data)
   };
 
   return (
