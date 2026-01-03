@@ -3,9 +3,9 @@ import { useContext, useState, useEffect, createContext } from 'react';
 import { supabase } from '@/utils/supabase';
 
 const AuthContext = createContext<{
-  loading: boolean,
-  session: Session | null | undefined,
-  user: User | null | undefined,
+  loading: boolean;
+  session: Session | null | undefined;
+  user: User | null | undefined;
 }>({
   session: null,
   user: null,
@@ -13,24 +13,29 @@ const AuthContext = createContext<{
 });
 
 const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>();
   const [session, setSession] = useState<Session | null>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const setData = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
       if (error) throw error;
-      setSession(session)
-      setUser(session?.user)
+      setSession(session);
+      setUser(session?.user);
       setLoading(false);
     };
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user)
-      setLoading(false)
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setUser(session?.user);
+        setLoading(false);
+      },
+    );
 
     setData();
 
