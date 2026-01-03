@@ -58,11 +58,16 @@ export default function Register() {
       },
     };
     const { error } = await supabase.auth.signUp(transformedRequest);
+    setLoading(false);
+
     if (error) {
       Alert.alert(error.message);
+      return;
     }
 
-    setLoading(false);
+    Alert.alert(
+      'An email has been sent to your account. Please confirm your email address to complete registration.',
+    );
   });
 
   return (
