@@ -7,9 +7,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   View,
+  ScrollView,
   Pressable,
 } from 'react-native';
-import { object, string } from 'yup';
+import { object, string, ref } from 'yup';
 import { MeshGradientView } from 'expo-mesh-gradient';
 
 import { Container } from '@/components/ui/container';
@@ -27,9 +28,14 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false);
 
-  const loginSchema = object({
+  const registerSchema = object({
+    firstName: string().required('Please enter your first name'),
+    lastName: string().required('Please enter your last name'),
     email: string().email().required('Please enter your email'),
     password: string().required('Please enter your password'),
+    passwordConfirm: string()
+      .required('Confirm Password is required')
+      .oneOf([ref('password')], 'Passwords must match'),
   });
 
   const {
@@ -37,14 +43,23 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(registerSchema),
   });
 
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword(data);
+
+    const transformedRequest = {
+      ...data,
+      options: {
+        data: {
+          full_name: `${data.firstName} ${data.lastName}`,
+        },
+      },
+    };
+    const { error } = await supabase.auth.signUp(transformedRequest);
     if (error) {
-      Alert.alert('Your credentials are incorrect');
+      Alert.alert(error.message);
     }
 
     setLoading(false);
@@ -82,8 +97,8 @@ export default function Register() {
           [1.0, 1.0],
         ]}
       >
-        <View className="flex-1 flex flex-col justify-center items-center">
-          <Container>
+        <ScrollView>
+          <Container className="flex-1 flex flex-col mt-16">
             <MotiText
               from={{
                 opacity: 0,
@@ -125,7 +140,51 @@ export default function Register() {
               </AppText>
             </MotiText>
 
-            <View className="bg-white p-10 mt-20 shadow-xl rounded-xl flex flex-col gap-6">
+            <View className="bg-white p-10 mt-12 shadow-xl rounded-xl flex flex-col gap-6">
+              <View>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <>
+                      <FormLabel>First name</FormLabel>
+                      <Input
+                        placeholder="Enter your first name"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        autoComplete="given-name"
+                        textContentType="givenName"
+                        value={value}
+                      />
+                    </>
+                  )}
+                  name="firstName"
+                />
+
+                <FormError error={errors.firstName} />
+              </View>
+
+              <View>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <>
+                      <FormLabel>Last name</FormLabel>
+                      <Input
+                        placeholder="Enter your last name"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        autoComplete="family-name"
+                        textContentType="familyName"
+                        value={value}
+                      />
+                    </>
+                  )}
+                  name="lastName"
+                />
+
+                <FormError error={errors.firstName} />
+              </View>
+
               <View>
                 <Controller
                   control={control}
@@ -175,10 +234,35 @@ export default function Register() {
                 <FormError error={errors.password} />
               </View>
 
+              <View>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <>
+                      <FormLabel>Confirm password</FormLabel>
+                      <Input
+                        placeholder="Confirm your password"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        secureTextEntry={true}
+                        autoCapitalize="none"
+                        autoComplete="password"
+                        textContentType="password"
+                        value={value}
+                      />
+                    </>
+                  )}
+                  name="passwordConfirm"
+                />
+
+                <FormError error={errors.password} />
+              </View>
+
               <Button
                 onPress={onSubmit}
-                title={loading ? 'Creating your account...' : 'Register'}
+                title="Register"
                 disabled={loading}
+                loading={loading}
               />
 
               <Pressable
@@ -192,7 +276,7 @@ export default function Register() {
               </Pressable>
             </View>
           </Container>
-        </View>
+        </ScrollView>
       </MeshGradientView>
     </KeyboardAvoidingView>
   );
