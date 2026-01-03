@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
+import { MotiText } from 'moti';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -83,13 +84,46 @@ export default function Register() {
       >
         <View className="flex-1 flex flex-col justify-center items-center">
           <Container>
-            <AppText className="text-4xl text-white font-manrope-600 text-center">
-              Register for an account.
-            </AppText>
+            <MotiText
+              from={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 1500,
+              }}
+            >
+              <AppText className="text-4xl text-white font-manrope-600 text-center">
+                Register for an account
+              </AppText>
+            </MotiText>
 
-            <AppText className="text-xl text-white mt-4 text-center">
-              Manage items, create outfits and share your look.
-            </AppText>
+            <MotiText
+              className="mt-4"
+              from={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 1500,
+                delay: 250,
+              }}
+            >
+              <AppText className="text-xl text-white text-center">
+                Curate your collection, compose ensembles and showcase your
+                style.
+              </AppText>
+            </MotiText>
 
             <View className="bg-white p-10 mt-20 shadow-xl rounded-xl flex flex-col gap-6">
               <View>
