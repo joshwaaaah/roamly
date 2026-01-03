@@ -99,7 +99,7 @@ export default function Register() {
               }}
             >
               <AppText className="text-4xl text-white font-manrope-600 text-center">
-                Register for an account
+                Register for an account.
               </AppText>
             </MotiText>
 
